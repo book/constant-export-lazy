@@ -1,8 +1,15 @@
+package Foo;
+sub import {}
+
 package TestImportingWithUniversal;
 use strict;
 use warnings;
 use Test::More tests => 3;
-use UNIVERSAL; # Creates UNIVERSAL::import()
+
+BEGIN {
+    our @ISA = qw( Foo );
+}
+
 BEGIN {
     my @warnings;
     eval {

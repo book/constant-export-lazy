@@ -41,6 +41,16 @@ sub import {
     # package they can just supply "wrap_existing_import => 1" in
     # their program.
     my $existing_import = $caller->can("import");
+
+    # Starting in Perl 5.40.0, UNIVERSAL actually has an import method
+    # https://perldoc.perl.org/5.40.0/perldelta#Calling-the-import-method-of-an-unknown-package-produces-a-warning
+    # In this case, we only care about an existing import, if it's *NOT* the one from UNIVERSAL
+    my $universal_import = UNIVERSAL->can("import");
+    $existing_import = undef
+      if $existing_import
+      && $universal_import
+      && $existing_import eq $universal_import;
+
     {
         my $has_import_already = $existing_import ? 1 : 0;
         if ($wrap_existing_import) {
